@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Create new paste{% endblock %}</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css"
+          integrity="sha256-9mbkOfVho3ZPXfM7W8sV2SndrGDuh7wuyLjtsWeTI1Q=" crossorigin="anonymous" />
+    <script
+            src="https://code.jquery.com/jquery-3.1.1.min.js"
+            integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.js"
+            integrity="sha256-qs5p0BFSqSvrstBxPvex+zdyrzcyGdHNeNmAirO2zc0=" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.6/ace.js"
+            integrity="sha256-CVkji/u32aj2TeC+D13f7scFSIfphw2pmu4LaKWMSY8=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" src="public/js/tools.js"></script>
+
+    <style>
+        #editor {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #editorReadonly {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+{% block body %}
+<div class="ui container">
+    <div class="ui top fixed menu">
+        <div class="item">
+            <b>paste</b>.socketbyte.pl
+        </div>
+        {% block nav %}
+        <div class="item">
+            <div class="ui floating dropdown labeled search icon button" id="lang-dropdown" onchange="onLangChange()">
+                <input type="hidden" name="lang-select" value="text">
+                <i class="code icon"></i>
+                <div class="default text">Text</div>
+                <div class="menu">
+                    <div class="item" data-value="text">Text</div>
+                    <div class="item" data-value="c_cpp">C/C++</div>
+                    <div class="item" data-value="java">Java</div>
+                    <div class="item" data-value="csharp">C#</div>
+                    <div class="item" data-value="rust">Rust</div>
+                    <div class="item" data-value="golang">Go</div>
+                    <div class="item" data-value="javascript">JavaScript</div>
+                    <div class="item" data-value="html">HTML</div>
+                    <div class="item" data-value="css">CSS</div>
+                    <div class="item" data-value="python">Python</div>
+                    <div class="item" data-value="swift">Swift</div>
+                    <div class="item" data-value="kotlin">Kotlin</div>
+                    <div class="item" data-value="yaml">YAML</div>
+                    <div class="item" data-value="xml">XML</div>
+                    <div class="item" data-value="json">JSON</div>
+                </div>
+            </div>
+        </div>
+        <div class="item">
+            <div class="ui buttons">
+                <div class="ui animated positive button" onclick="createPaste()" tabindex="0">
+                    <div class="visible content">Create new paste!</div>
+                    <div class="hidden content">
+                        <i class="right arrow icon"></i>
+                    </div>
+                </div>
+                <div class="or"></div>
+                <button class="ui button" data-tooltip="Only you will be able to see this paste" data-position="bottom center">
+                    Make it private...
+                </button>
+            </div>
+        </div>
+        <div class="item">
+            <div class="ui labeled input" data-children-count="1">
+                <div class="ui label">
+                    paste.socketbyte.pl/
+                </div>
+                <input id="id-select" type="text" placeholder="leave blank for random">
+            </div>
+        </div>
+        {% endblock %}
+        <div class="right menu">
+            <div class="item">
+                <div class="ui floating dropdown labeled search icon button" id="theme-dropdown" onchange="onThemeChange()">
+                    <input type="hidden" name="theme-select" value="dreamweaver">
+                    <i class="paint brush icon"></i>
+                    <div class="default text">Dreamweaver</div>
+                    <div class="menu">
+                        <div class="item" data-value="dreamweaver">Dreamweaver</div>
+                        <div class="item" data-value="github">Github</div>
+                        <div class="item" data-value="twilight">Twilight</div>
+                        <div class="item" data-value="ambiance">Ambiance</div>
+                        <div class="item" data-value="chaos">Chaos</div>
+                        <div class="item" data-value="clouds">Clouds</div>
+                        <div class="item" data-value="cobalt">Cobalt</div>
+                        <div class="item" data-value="crimson_editor">Crimson Editor</div>
+                        <div class="item" data-value="dawn">Dawn</div>
+                        <div class="item" data-value="dracula">Dracula</div>
+                        <div class="item" data-value="eclipse">Eclipse</div>
+                        <div class="item" data-value="gob">Gob</div>
+                        <div class="item" data-value="gruvbox">Gruvbox</div>
+                        <div class="item" data-value="idle_fingers">Idle fingers</div>
+                        <div class="item" data-value="iplastic">Iplastic</div>
+                        <div class="item" data-value="katzenmilch">Katzenmilch</div>
+                        <div class="item" data-value="kr_theme">Kr Theme</div>
+                        <div class="item" data-value="kuroir">Kuroir</div>
+                        <div class="item" data-value="merbivore">Merbivore</div>
+                        <div class="item" data-value="merbivore_soft">Merbivore Soft</div>
+                        <div class="item" data-value="mono_industrial">Mono Industrial</div>
+                        <div class="item" data-value="monokai">Monokai</div>
+                        <div class="item" data-value="pastel_on_dark">Pastel on Dark</div>
+                        <div class="item" data-value="solarized_dark">Solarized Dark</div>
+                        <div class="item" data-value="solarized_light">Solarized Light</div>
+                        <div class="item" data-value="sqlserver">Sqlserver</div>
+                        <div class="item" data-value="terminal">Terminal</div>
+                        <div class="item" data-value="textmate">Textmate</div>
+                        <div class="item" data-value="tomorrow">Tomorrow</div>
+                        <div class="item" data-value="tomorrow_night">Tomorrow Night</div>
+                        <div class="item" data-value="tomorrow_night_blue">Tomorrow Night Blue</div>
+                        <div class="item" data-value="tomorrow_night_bright">Tomorrow Night Bright</div>
+                        <div class="item" data-value="tomorrow_night_eighties">Tomorrow Night Eighties</div>
+                        <div class="item" data-value="vibrant_ink">Vibrant Ink</div>
+                        <div class="item" data-value="xcode">Xcode</div>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui vertical animated button" tabindex="0">
+                    <div class="hidden content">Sign in</div>
+                    <div class="visible content">
+                        <i class="sign in alternate icon"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="item">
+                <div class="ui animated blue fade button" tabindex="0">
+                    <div class="visible content">Create account</div>
+                    <div class="hidden content">
+                        It's free!
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% block editor %}
+    <!-- temporary solution until I fucking fix this shit -->
+    <div id="editor" style="margin-top: 3.25%"></div>
+    {% endblock %}
+</div>
+
+<script>
+    let langDropdown = $('#lang-dropdown');
+    let themeDropdown = $('#theme-dropdown');
+    let idSelect = $('#id-select');
+
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/" + themeDropdown.dropdown('get value'));
+    editor.session.setMode("ace/mode/" + langDropdown.dropdown('get value'));
+    editor.setOption("fontSize", 16);
+
+    $('.ui.floating.dropdown.labeled.search.icon.button').dropdown();
+
+    function onLangChange() {
+        editor.session.setMode("ace/mode/" + langDropdown.dropdown('get value'));
+    }
+
+    function createPaste() {
+        let text = editor.getValue();
+
+        let lang = langDropdown.dropdown('get value');
+
+        post("/create", {"text": text, "lang": lang, "id": idSelect.val()});
+    }
+</script>
+{% endblock %}
+</body>
+</html>

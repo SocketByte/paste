@@ -1,0 +1,64 @@
+{% extends "index.html" %}
+
+{% block title %}Paste #{{ id }}{% endblock %}
+
+{% block editor %}
+<div id="editorReadonly" style="margin-top: 2.9%"></div>
+<script>
+    let themeDropdown = $('#theme-dropdown');
+
+    var editor = ace.edit("editorReadonly");
+    editor.setTheme("ace/theme/" + themeDropdown.dropdown('get value'));
+    editor.session.setMode("ace/mode/" + "{{ lang }}");
+    editor.setOption("fontSize", 16);
+    editor.setReadOnly(true);
+
+    var parser = new DOMParser;
+    var dom = parser.parseFromString(
+        '<!doctype html><body>' + `{{text}}`,
+        'text/html');
+    var decodedString = dom.body.textContent;
+
+    editor.setValue(decodedString);
+    editor.gotoLine(0);
+
+</script>
+{% endblock %}
+
+{% block nav %}
+<div class="item">
+    <div class="ui horizontal tiny statistic">
+        <div class="value" id="views">
+            {{ views }}
+        </div>
+        <div class="label">
+            <i class="eye icon"></i>
+        </div>
+    </div>
+</div>
+<div class="item">
+    <div class="ui labeled button" onclick="like()" tabindex="0">
+        <div class="ui red button">
+            <i class="heart icon"></i> Thanks!
+        </div>
+        <a class="ui basic red left pointing label" id="likes">
+            {{ likes }}
+        </a>
+    </div>
+</div>
+<script>
+    setInterval(function(){
+        $('#views').load('/api/v1/get_views/{{ id }}');
+        $('#likes').load('/api/v1/get_likes/{{ id }}');
+    }, 2000);
+
+    //setCookie("viewed@{{id}}", "1", 1);
+
+    function like() {
+        if (readCookie("liked@{{id}}") !== "1") {
+            setCookie("liked@{{id}}", "1", 1);
+            post("/like", {"id": `{{id}}`})
+        }
+    }
+</script>
+{% endblock %}

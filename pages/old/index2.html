@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create new paste</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet"
+          href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.10/highlight.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.6/ace.js" integrity="sha256-CVkji/u32aj2TeC+D13f7scFSIfphw2pmu4LaKWMSY8=" crossorigin="anonymous"></script>
+
+    <style>
+        #editor {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 94.2vh;
+        }
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="#"><b>paste</b>.socketbyte.pl</a>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo03">
+        <form method="post" action="/create" class="form-inline mr-auto mt-2 mt-lg-0">
+            <select class="custom-select mr-sm-2 bg0" id="lang-select" onchange="function langSelection() {
+                let e = document.getElementById('lang-select');
+                let selected = e.options[e.selectedIndex].value;
+
+                editor.session.setMode('ace/mode/' + selected);
+            }
+            langSelection()">
+                <option value="c_cpp" selected>C/C++</option>
+                <option value="java">Java</option>
+                <option value="csharp">C#</option>
+                <option value="rust">Rust</option>
+                <option value="golang">Go</option>
+                <option value="javascript">JavaScript</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="python">Python</option>
+                <option value="swift">Swift</option>
+                <option value="kotlin">Kotlin</option>
+                <option value="yaml">YAML</option>
+                <option value="xml">XML</option>
+                <option value="json">JSON</option>
+            </select>
+            <button type="submit" id="create" class="btn btn-secondary ml-3">Create new paste!</button>
+        </form>
+        <form class="form-inline my-2 my-lg-0">
+            <select class="custom-select mr-sm-2 bg0" id="theme-select" onchange="function themeSelection() {
+                let e = document.getElementById('theme-select');
+                let selected = e.options[e.selectedIndex].value;
+
+                editor.setTheme('ace/theme/' + selected);
+                saveTheme(selected)
+            }
+            themeSelection()">
+                <option value="dreamweaver" selected>Dreamweaver</option>
+                <option value="github">Github</option>
+                <option value="twilight">Twilight</option>
+                <option value="ambiance">Ambiance</option>
+                <option value="chaos">Chaos</option>
+                <option value="clouds">Clouds</option>
+                <option value="cobalt">Cobalt</option>
+                <option value="crimson_editor">Crimson_editor</option>
+                <option value="dawn">Dawn</option>
+                <option value="dracula">Dracula</option>
+                <option value="eclipse">Eclipse</option>
+                <option value="gob">Gob</option>
+                <option value="gruvbox">Gruvbox</option>
+                <option value="idle_fingers">Idle fingers</option>
+                <option value="iplastic">Iplastic</option>
+                <option value="katzenmilch">Katzenmilch</option>
+                <option value="kr_theme">Kr Theme</option>
+                <option value="kuroir">Kuroir</option>
+                <option value="merbivore">Merbivore</option>
+                <option value="merbivore_soft">Merbivore Soft</option>
+                <option value="mono_industrial">Mono Industrial</option>
+                <option value="monokai">Monokai</option>
+                <option value="pastel_on_dark">Pastel on Dark</option>
+                <option value="solarized_dark">Solarized Dark</option>
+                <option value="solarized_light">Solarized Light</option>
+                <option value="sqlserver">Sqlserver</option>
+                <option value="terminal">Terminal</option>
+                <option value="textmate">Textmate</option>
+                <option value="tomorrow">Tomorrow</option>
+                <option value="tomorrow_night">Tomorrow Night</option>
+                <option value="tomorrow_night_blue">Tomorrow Night Blue</option>
+                <option value="tomorrow_night_bright">Tomorrow Night Bright</option>
+                <option value="tomorrow_night_eighties">Tomorrow Night Eighties</option>
+                <option value="vibrant_ink">Vibrant Ink</option>
+                <option value="xcode">Xcode</option>
+            </select>
+        </form>
+    </div>
+</nav>
+<div class="container">
+    <div class="form-group">
+        <div id="editor"></div>
+    </div>
+</div>
+
+<script>
+    let tS = document.getElementById('theme-select');
+    let lS = document.getElementById('lang-select');
+
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/" + tS.options[tS.selectedIndex].value);
+    editor.session.setMode("ace/mode/" + lS.options[lS.selectedIndex].value);
+    editor.setOption("fontSize", 15);
+
+    hljs.initHighlightingOnLoad();
+
+    var saveclass = null;
+
+    function saveTheme(cookieValue)
+    {
+        var sel = document.getElementById('theme-select');
+
+        saveclass = saveclass ? saveclass : document.body.className;
+        document.body.className = saveclass + ' ' + sel.value;
+
+        setCookie('theme', cookieValue, 365);
+    }
+
+    function setCookie(cookieName, cookieValue, nDays) {
+        var today = new Date();
+        var expire = new Date();
+
+        if (nDays==null || nDays==0)
+            nDays=1;
+
+        expire.setTime(today.getTime() + 3600000*24*nDays);
+        document.cookie = cookieName+"="+escape(cookieValue) + ";expires="+expire.toGMTString();
+    }
+
+    function readCookie(name) {
+        var nameEQ = name + "=";
+        var ca = document.cookie.split(';');
+        for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+            if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+        }
+        return null;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var themeSelect = document.getElementById('theme-select');
+        var selectedTheme = readCookie('theme');
+
+        themeSelect.value = selectedTheme;
+        saveclass = saveclass ? saveclass : document.body.className;
+        document.body.className = saveclass + ' ' + selectedTheme;
+
+        editor.setTheme("ace/theme/" + tS.options[tS.selectedIndex].value);
+    });
+</script>
+</body>
+</html>
