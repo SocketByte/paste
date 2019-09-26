@@ -17,33 +17,12 @@
             integrity="sha256-CVkji/u32aj2TeC+D13f7scFSIfphw2pmu4LaKWMSY8=" crossorigin="anonymous"></script>
 
     <script type="text/javascript" src="public/js/tools.js"></script>
-
-    <style>
-        #editor {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        #editorReadonly {
-            position: absolute;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-        }
-    </style>
+    <link rel="stylesheet" href="public/css/style.css" type="text/css" />
 </head>
 <body>
 {% block body %}
-<div class="ui container">
-    <div class="ui top fixed menu">
+<div class="ui container-fluid">
+    <div class="ui top menu">
         <div class="item">
             <b>paste</b>.socketbyte.pl
         </div>
@@ -161,7 +140,7 @@
 
     {% block editor %}
     <!-- temporary solution until I fucking fix this shit -->
-    <div id="editor" style="margin-top: 3.25%"></div>
+    <div id="editor"></div>
     {% endblock %}
 </div>
 
